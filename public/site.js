@@ -1,18 +1,30 @@
 const root = document.documentElement;
 root.dataset.js = 'true';
 const motionButton = document.querySelector('button[data-motion]');
+const motionLabel = motionButton.querySelector('[data-motion-label]');
 const preference = matchMedia('(prefers-reduced-motion: reduce)');
-let stored;
+let stored = null;
 try { stored = localStorage.getItem('vraj-motion'); } catch {}
-let motion = stored ? stored === 'on' : !preference.matches;
+if (stored !== 'on' && stored !== 'off') stored = null;
+let motion = stored !== null ? stored === 'on' : !preference.matches;
 function updateMotion() {
   root.dataset.motion = motion ? 'on' : 'off';
   motionButton.setAttribute('aria-pressed', String(motion));
-  motionButton.textContent = `Motion ${motion ? 'on' : 'off'} ${motion ? '◉' : '○'}`;
+  motionLabel.textContent = `Motion ${motion ? 'on' : 'off'}`;
 }
 updateMotion();
-motionButton.addEventListener('click', () => { motion = !motion; updateMotion(); try { localStorage.setItem('vraj-motion', motion ? 'on' : 'off'); } catch {} });
-preference.addEventListener('change', e => { motion = !e.matches; updateMotion(); });
+motionButton.addEventListener('click', () => {
+  motion = !motion;
+  stored = motion ? 'on' : 'off';
+  updateMotion();
+  try { localStorage.setItem('vraj-motion', stored); } catch {}
+});
+function followSystemPreference(event) {
+  // The OS supplies the default; an explicit site preference takes precedence.
+  if (stored === null) { motion = !event.matches; updateMotion(); }
+}
+if (preference.addEventListener) preference.addEventListener('change', followSystemPreference);
+else preference.addListener(followSystemPreference);
 const menu = document.querySelector('[data-menu]');
 const nav = document.querySelector('#navigation');
 menu.addEventListener('click', () => {

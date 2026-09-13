@@ -36,3 +36,9 @@ The artwork is original HTML/CSS/SVG. DM Sans and IBM Plex Mono are bundled loca
 The GitHub profile repository and original `spider-portfolio` are separate from this site. Enable GitHub Pages using the steps above to publish the website.
 
 Deployment references: [GitHub Pages workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages) and [Vercel project configuration](https://vercel.com/docs/project-configuration).
+
+## Browser compatibility checks
+
+Run `npm ci`, then `npx playwright install webkit`. Tests also use an installed Google Chrome browser. Run `npm test` to check WebKit with an iPhone viewport and Chrome with an Android viewport. On Windows PowerShell, use `npm.cmd` and `npx.cmd` if execution policy blocks the scripts.
+
+The checks cover the reduced-motion default, explicit on/off overrides, saved settings across project navigation, unavailable browser storage, SVG icons, mobile navigation, and the no-JavaScript fallback. Decorative icons use inline SVG to avoid platform-specific emoji rendering. OS reduced motion remains the default until the visitor explicitly changes the site's motion setting.
